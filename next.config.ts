@@ -33,16 +33,20 @@ const nextConfig: NextConfig = {
     deviceSizes: [384, 640, 828, 1080, 1440, 1920, 2560],
     imageSizes: [96, 160, 256, 320],
     minimumCacheTTL: 60 * 60 * 24 * 30,
-    remotePatterns: host
-      ? [
-          {
-            protocol: host.protocol,
-            hostname: host.hostname,
-            port: host.port,
-            pathname: "/storage/v1/object/public/**",
-          },
-        ]
-      : [],
+    remotePatterns: [
+      ...(host
+        ? [
+            {
+              protocol: host.protocol,
+              hostname: host.hostname,
+              port: host.port,
+              pathname: "/storage/v1/object/public/**",
+            },
+          ]
+        : []),
+      // YouTube video thumbnails (videos section)
+      { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" },
+    ],
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

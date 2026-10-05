@@ -115,6 +115,18 @@ export interface Service {
   updated_at: string;
 }
 
+export interface Video {
+  id: string;
+  title: string;
+  youtube_id: string;
+  vertical: boolean;
+  featured: boolean;
+  published: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Package {
   id: string;
   title: string;

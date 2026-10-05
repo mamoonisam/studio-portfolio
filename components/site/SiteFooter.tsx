@@ -5,7 +5,7 @@ import { t } from "@/lib/i18n";
 import { safeUrl, telLink, whatsappLink } from "@/lib/utils/contact";
 import type { SiteSettings } from "@/types/content";
 
-export function SiteFooter({ settings: s }: { settings: SiteSettings }) {
+export function SiteFooter({ settings: s, showVideos = false }: { settings: SiteSettings; showVideos?: boolean }) {
   const name = siteName(s);
   const tel = telLink(s.phone);
   const wa = whatsappLink(s.whatsapp, t.whatsapp.greeting);
@@ -24,6 +24,7 @@ export function SiteFooter({ settings: s }: { settings: SiteSettings }) {
         <nav aria-label={t.nav.menu} className="min-w-0">
           <ul className="grid gap-2 text-[0.95rem]">
             <li><Link className="text-muted hover:text-ink" href="/portfolio">{t.nav.portfolio}</Link></li>
+            {showVideos && <li><Link className="text-muted hover:text-ink" href="/videos">{t.nav.videos}</Link></li>}
             <li><Link className="text-muted hover:text-ink" href="/packages">{t.nav.packages}</Link></li>
             <li><Link className="text-muted hover:text-ink" href="/about">{t.nav.about}</Link></li>
             <li><Link className="text-muted hover:text-ink" href="/booking">{t.nav.booking}</Link></li>

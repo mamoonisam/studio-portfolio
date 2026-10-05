@@ -5,7 +5,7 @@ import { isSupabaseConfigured } from "@/lib/env";
 import { getPublicSupabase } from "@/lib/supabase/public";
 import { logError } from "@/lib/utils/log";
 import { emptySettings } from "@/lib/data/defaults";
-import type { Album, AlbumWithCover, Category, Media, Package, Service, SiteSettings } from "@/types/content";
+import type { Album, AlbumWithCover, Category, Media, Package, Service, SiteSettings, Video } from "@/types/content";
 
 /**
  * Public, read-only queries used by the website. They run with the anonymous
@@ -204,6 +204,24 @@ export const getPackages = cache(async (): Promise<Package[]> => {
     return ((data ?? []) as Package[]).map(normalizePackage);
   } catch (error) {
     return fail("packages", error, []);
+  }
+});
+
+/** Published YouTube videos, in the photographer's order (newest first by default). */
+export const getVideos = cache(async (): Promise<Video[]> => {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const { data, error } = await getPublicSupabase()
+      .from("videos")
+      .select("*")
+      .eq("published", true)
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) return fail("videos", error, []);
+    return (data ?? []) as Video[];
+  } catch (error) {
+    return fail("videos", error, []);
   }
 });
 

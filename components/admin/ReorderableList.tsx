@@ -7,7 +7,7 @@ import { useFeedback } from "@/components/admin/Feedback";
 import { reorderItems } from "@/lib/actions/media";
 import { t } from "@/lib/i18n";
 
-type Table = "categories" | "albums" | "services" | "packages";
+type Table = "categories" | "albums" | "services" | "packages" | "videos";
 
 interface Props<T extends { id: string }> {
   table: Table;

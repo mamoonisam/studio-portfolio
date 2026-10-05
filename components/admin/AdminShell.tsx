@@ -17,6 +17,7 @@ import {
   MenuIcon,
   SettingsIcon,
   TagIcon,
+  VideoIcon,
 } from "@/components/icons";
 import { FeedbackProvider } from "@/components/admin/Feedback";
 import { logoutAction } from "@/lib/actions/auth";
@@ -30,6 +31,7 @@ const NAV = [
   { href: "/admin/bookings", label: n.bookings, Icon: CalendarIcon, badge: true },
   { href: "/admin/media", label: n.media, Icon: ImageIcon },
   { href: "/admin/albums", label: n.albums, Icon: AlbumIcon },
+  { href: "/admin/videos", label: n.videos, Icon: VideoIcon },
   { href: "/admin/categories", label: n.categories, Icon: TagIcon },
   { href: "/admin/services", label: n.services, Icon: BriefcaseIcon },
   { href: "/admin/packages", label: n.packages, Icon: BoxIcon },

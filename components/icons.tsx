@@ -59,6 +59,7 @@ export const StarIcon = ({ filled, ...p }: IconProps & { filled?: boolean }) => 
 export const EyeIcon = (p: IconProps) => <Base {...p}><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></Base>;
 export const EyeOffIcon = (p: IconProps) => <Base {...p}><path d="M3 3l18 18M10.6 5.1A10 10 0 0112 5c6.4 0 10 7 10 7a17 17 0 01-3 3.9M6.6 6.6A17 17 0 002 12s3.6 7 10 7a9.6 9.6 0 004.4-1.1M9.9 9.9a3 3 0 004.2 4.2" /></Base>;
 export const CopyIcon = (p: IconProps) => <Base {...p}><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3" /></Base>;
+export const VideoIcon = (p: IconProps) => <Base {...p}><rect x="3" y="5" width="14" height="14" rx="2" /><path d="M17 10l4-2.5v9L17 14" /></Base>;
 export const KeyIcon = (p: IconProps) => <Base {...p}><circle cx="8" cy="15" r="4" /><path d="M11 12l9-9M17 6l3 3M14 9l2 2" /></Base>;
 export const AlertIcon = (p: IconProps) => <Base {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></Base>;
 export const SpinnerIcon = ({ size = 18, className }: IconProps) => (

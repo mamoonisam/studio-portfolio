@@ -2,6 +2,7 @@ import { z } from "zod";
 import { t } from "@/lib/i18n";
 import { isValidStoragePath, isAllowedType, MAX_UPLOAD_BYTES } from "@/lib/config/media";
 import { toAsciiDigits } from "@/lib/utils/format";
+import { parseYouTube } from "@/lib/utils/youtube";
 import { bool, optionalText, optionalUuid, requiredText, text, uuid } from "./common";
 
 const c = t.admin.common;
@@ -111,7 +112,7 @@ export const albumMediaSchema = z.object({
 
 // ── Ordering ────────────────────────────────────────────────────────────────
 export const reorderSchema = z.object({
-  table: z.enum(["categories", "media", "albums", "services", "packages"]),
+  table: z.enum(["categories", "media", "albums", "services", "packages", "videos"]),
   ids: z.array(uuid).min(1).max(2000),
 });
 
@@ -213,3 +214,28 @@ export const settingsSchema = z
   .partial();
 
 export type SettingsInput = z.infer<typeof settingsSchema>;
+
+// ── Videos (YouTube) ───────────────────────────────────────────────────────
+export const videoSchema = z
+  .object({
+    id: optionalUuid,
+    url: z.string().max(500),
+    title: requiredText(1, 200, t.admin.videos.titleRequired),
+    vertical: bool,
+    featured: bool,
+    published: bool,
+  })
+  .transform((d, ctx) => {
+    const parsed = parseYouTube(d.url);
+    if (!parsed) {
+      ctx.addIssue({ code: "custom", path: ["url"], message: t.admin.videos.invalidUrl });
+      return z.NEVER;
+    }
+    return { id: d.id, youtube_id: parsed.id, title: d.title, vertical: d.vertical, featured: d.featured, published: d.published };
+  });
+
+export const videoToggleSchema = z.object({
+  id: uuid,
+  field: z.enum(["featured", "published"]),
+  value: z.boolean(),
+});

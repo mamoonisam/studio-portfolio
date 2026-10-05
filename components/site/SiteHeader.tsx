@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils/cn";
 const NAV = [
   { href: "/", label: t.nav.home },
   { href: "/portfolio", label: t.nav.portfolio },
+  { href: "/videos", label: t.nav.videos },
   { href: "/packages", label: t.nav.packages },
   { href: "/about", label: t.nav.about },
   { href: "/booking", label: t.nav.booking },
@@ -22,9 +23,12 @@ interface Props {
   logoUrl: string | null;
   /** Home page with a hero image: start transparent with light text. */
   hasHero: boolean;
+  /** The "Videos" link appears only once at least one video is published. */
+  showVideos?: boolean;
 }
 
-export function SiteHeader({ name, logoUrl, hasHero }: Props) {
+export function SiteHeader({ name, logoUrl, hasHero, showVideos = false }: Props) {
+  const nav = showVideos ? NAV : NAV.filter((item) => item.href !== "/videos");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -107,7 +111,7 @@ export function SiteHeader({ name, logoUrl, hasHero }: Props) {
 
         <nav aria-label={t.nav.menu} className="hidden lg:block">
           <ul className="flex items-center gap-1">
-            {NAV.slice(0, -1).map((item) => (
+            {nav.slice(0, -1).map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -151,7 +155,7 @@ export function SiteHeader({ name, logoUrl, hasHero }: Props) {
         style={{ animation: open ? "fadeIn .2s ease" : undefined }}
       >
         <nav aria-label={t.nav.menu} className="container-x flex flex-col py-6">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}

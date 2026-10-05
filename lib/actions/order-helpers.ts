@@ -2,7 +2,7 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-type OrderedTable = "categories" | "media" | "albums" | "services" | "packages";
+type OrderedTable = "categories" | "media" | "albums" | "services" | "packages" | "videos";
 
 /** display_order for a new row: at the end (default) or at the start of the list. */
 export async function newDisplayOrder(

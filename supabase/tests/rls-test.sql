@@ -49,7 +49,7 @@ set client_min_messages = notice;
 -- Fixtures (as superuser)
 -- ---------------------------------------------------------------------------
 truncate public.bookings, public.album_media, public.albums, public.media, public.categories,
-         public.services, public.packages, public.admin_users cascade;
+         public.services, public.packages, public.videos, public.admin_users cascade;
 delete from auth.users;
 delete from storage.objects;
 
@@ -82,6 +82,10 @@ insert into public.services (id, title, slug, active) values
 insert into public.packages (id, title, price, currency, features, active) values
   ('50000000-0000-0000-0000-000000000001', 'الباقة الذهبية', 250000, 'د.ع', '["ساعتان تصوير"]', true),
   ('50000000-0000-0000-0000-000000000002', 'باقة مخفية', 100, '$', '[]', false);
+
+insert into public.videos (id, title, youtube_id, published, display_order) values
+  ('60000000-0000-0000-0000-000000000001', 'فيديو عرس', 'dQw4w9WgXcQ', true, 1),
+  ('60000000-0000-0000-0000-000000000002', 'فيديو مخفي', 'aaaaaaaaaaa', false, 2);
 
 insert into storage.objects (bucket_id, name) values ('media', 'portfolio/2026/10/a.jpg');
 
@@ -128,6 +132,9 @@ select t.ok((select count(*) from public.albums) = 1, 'anon sees published album
 select t.ok((select count(*) from public.album_media) = 2, 'anon sees links of published albums only');
 select t.ok((select count(*) from public.services) = 1, 'anon sees active services only');
 select t.ok((select count(*) from public.packages) = 1, 'anon sees active packages only');
+select t.ok((select count(*) from public.videos) = 1, 'anon sees published videos only');
+select t.ok(t.fails($$insert into public.videos (title, youtube_id) values ('x', 'bbbbbbbbbbb')$$), 'anon cannot add videos');
+select t.ok(t.fails($$delete from public.videos$$), 'anon cannot delete videos');
 select t.ok(t.fails('select * from public.bookings'), 'anon cannot read bookings');
 select t.ok(t.fails('select admin_notes from public.bookings'), 'anon cannot read admin notes');
 select t.ok(t.fails('select * from public.admin_users'), 'anon cannot read admin_users');
@@ -159,6 +166,8 @@ select t.ok(t.affected($$update public.packages set price = 1$$) = 0, 'non-admin
 select t.ok(t.fails($$insert into public.media (storage_path) values ('portfolio/x.jpg')$$), 'non-admin cannot insert media');
 select t.ok(t.affected($$delete from public.albums$$) = 0, 'non-admin cannot delete albums');
 select t.ok(t.affected($$update public.site_settings set studio_name = 'x'$$) = 0, 'non-admin cannot update settings');
+select t.ok(t.fails($$insert into public.videos (title, youtube_id) values ('x', 'bbbbbbbbbbb')$$), 'non-admin cannot add videos');
+select t.ok(t.affected($$update public.videos set published = false$$) = 0, 'non-admin cannot hide videos');
 select t.ok(t.fails($$insert into public.admin_users (user_id, role) values ('00000000-0000-0000-0000-00000000000b', 'owner')$$),
         'non-admin cannot promote themselves');
 select t.ok(t.fails($$select public.reorder_items('packages', array['50000000-0000-0000-0000-000000000001']::uuid[])$$), 'non-admin cannot reorder');
@@ -192,6 +201,13 @@ select t.ok(t.affected($$delete from storage.objects where name = 'portfolio/202
 select public.reorder_items('packages', array['50000000-0000-0000-0000-000000000002', '50000000-0000-0000-0000-000000000001']::uuid[]);
 select t.ok((select display_order from public.packages where id = '50000000-0000-0000-0000-000000000001') = 2, 'reorder works');
 select t.ok(t.fails($$select public.reorder_items('bookings', array[]::uuid[])$$), 'reorder refuses tables outside the list');
+
+select t.ok((select count(*) from public.videos) = 2, 'admin sees hidden videos');
+select t.ok(t.affected($$insert into public.videos (title, youtube_id, vertical) values ('ريل', 'ccccccccccc', true)$$) = 1, 'admin adds a video');
+select t.ok(t.fails($$insert into public.videos (title, youtube_id) values ('bad', 'not-a-valid-id!')$$), 'invalid YouTube id rejected');
+select public.reorder_items('videos', array['60000000-0000-0000-0000-000000000002', '60000000-0000-0000-0000-000000000001']::uuid[]);
+select t.ok((select display_order from public.videos where id = '60000000-0000-0000-0000-000000000001') = 2, 'videos can be reordered');
+select t.ok(t.affected($$delete from public.videos where id = '60000000-0000-0000-0000-000000000002'$$) = 1, 'admin deletes a video');
 
 select public.set_album_media('30000000-0000-0000-0000-000000000002', array['20000000-0000-0000-0000-000000000001']::uuid[]);
 select t.ok((select count(*) from public.album_media where album_id = '30000000-0000-0000-0000-000000000002') = 1, 'set_album_media replaces photos');

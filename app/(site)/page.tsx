@@ -5,7 +5,8 @@ import { PhotoGrid } from "@/components/site/PhotoGrid";
 import { PackageCard } from "@/components/site/PackageCard";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { StudioJsonLd } from "@/components/site/JsonLd";
-import { getFeaturedMedia, getPackages, getServices, getSettings } from "@/lib/data/public";
+import { VideoGrid } from "@/components/site/VideoCard";
+import { getFeaturedMedia, getPackages, getServices, getSettings, getVideos } from "@/lib/data/public";
 import { siteName } from "@/lib/data/defaults";
 import { t } from "@/lib/i18n";
 import { toGridPhoto } from "@/lib/utils/media";
@@ -15,12 +16,14 @@ export const revalidate = 3600;
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function HomePage() {
-  const [s, featured, services, packages] = await Promise.all([
+  const [s, featured, services, packages, videos] = await Promise.all([
     getSettings(),
     getFeaturedMedia(12),
     getServices(),
     getPackages(),
+    getVideos(),
   ]);
+  const homeVideos = videos.filter((v) => v.featured).slice(0, 6);
   const name = siteName(s);
   const heroTitle = s.hero_title || name;
   const primaryLabel = s.hero_primary_label || t.home.viewAll;
@@ -71,6 +74,20 @@ export default async function HomePage() {
               action={{ href: "/portfolio", label: t.home.viewAll }}
             />
             <PhotoGrid photos={featured.map((m) => toGridPhoto(m, name))} />
+          </div>
+        </section>
+      )}
+
+      {/* ── Videos ──────────────────────────────────────────── */}
+      {homeVideos.length > 0 && (
+        <section className="section border-t border-line" aria-labelledby="videos-heading">
+          <div className="container-x">
+            <SectionHeading
+              id="videos-heading"
+              title={t.videos.homeTitle}
+              action={videos.length > homeVideos.length ? { href: "/videos", label: t.videos.viewAll } : undefined}
+            />
+            <VideoGrid videos={homeVideos} />
           </div>
         </section>
       )}

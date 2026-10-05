@@ -13,6 +13,7 @@ import type {
   Package,
   Service,
   SiteSettings,
+  Video,
 } from "@/types/content";
 
 /**
@@ -189,4 +190,14 @@ export async function getSettingsForAdmin(supabase: SupabaseClient): Promise<Sit
   const { data, error } = await supabase.from("site_settings").select("*").eq("id", 1).maybeSingle();
   if (error) throw error;
   return { ...emptySettings, ...(data ?? {}) } as SiteSettings;
+}
+
+export async function listVideos(supabase: SupabaseClient): Promise<Video[]> {
+  const { data, error } = await supabase
+    .from("videos")
+    .select("*")
+    .order("display_order", { ascending: true })
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as Video[];
 }
