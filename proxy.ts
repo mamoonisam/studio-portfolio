@@ -14,7 +14,10 @@ export async function proxy(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const isLogin = request.nextUrl.pathname === "/admin/login";
+  // Pages a signed-out visitor must be able to open (login and password recovery).
+  // /admin/reset checks its own recovery session on the server.
+  const PUBLIC_PATHS = ["/admin/login", "/admin/forgot", "/admin/reset", "/admin/auth/callback"];
+  const isLogin = PUBLIC_PATHS.includes(request.nextUrl.pathname);
 
   if (!url || !key) {
     if (isLogin) return response;

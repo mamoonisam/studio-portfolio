@@ -12,6 +12,7 @@ import {
   ExternalIcon,
   HomeIcon,
   ImageIcon,
+  KeyIcon,
   LogoutIcon,
   MenuIcon,
   SettingsIcon,
@@ -87,6 +88,18 @@ export function AdminShell({ children, siteName, email, newBookings }: Props) {
       <Link href="/" target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-[0.95rem] hover:bg-surface-2">
         <ExternalIcon size={20} />
         {n.viewSite}
+      </Link>
+      <Link
+        href="/admin/account"
+        aria-current={pathname === "/admin/account" ? "page" : undefined}
+        onClick={() => setOpen(false)}
+        className={cn(
+          "flex min-h-11 items-center gap-3 rounded-xl px-3 text-[0.95rem] transition-colors",
+          pathname === "/admin/account" ? "bg-ink text-bg" : "hover:bg-surface-2",
+        )}
+      >
+        <KeyIcon size={20} />
+        {n.account}
       </Link>
       <form action={logoutAction}>
         <button type="submit" className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-[0.95rem] text-danger hover:bg-surface-2">
