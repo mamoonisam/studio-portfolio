@@ -1,0 +1,56 @@
+import type { SiteSettings } from "@/types/content";
+
+/** Used only if the settings row cannot be read (e.g. during the first build). */
+export const emptySettings: SiteSettings = {
+  photographer_name: "",
+  studio_name: "",
+  logo_path: null,
+  favicon_path: null,
+  hero_image_path: null,
+  hero_title: "",
+  hero_subtitle: "",
+  hero_primary_label: "",
+  hero_secondary_label: "",
+  about_image_path: null,
+  about_title: "",
+  about_short: "",
+  about_text: "",
+  about_story: "",
+  about_extra: "",
+  years_experience: null,
+  featured_title: "",
+  featured_intro: "",
+  services_title: "",
+  services_intro: "",
+  packages_title: "",
+  packages_intro: "",
+  portfolio_intro: "",
+  cta_title: "",
+  cta_text: "",
+  cta_button_label: "",
+  booking_intro: "",
+  booking_success: "",
+  contact_intro: "",
+  footer_note: "",
+  phone: "",
+  whatsapp: "",
+  email: "",
+  address: "",
+  map_url: "",
+  working_hours: "",
+  phone_country_code: "",
+  instagram_url: "",
+  facebook_url: "",
+  tiktok_url: "",
+  youtube_url: "",
+  seo_title: "",
+  seo_description: "",
+  og_image_path: null,
+  theme: "light",
+  accent: "brass",
+};
+
+/** The name shown in the header, footer and titles. */
+export function siteName(s: SiteSettings): string {
+  return s.studio_name.trim() || s.photographer_name.trim() || "";
+}
